@@ -13,6 +13,14 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <build>
     <plugins>
         <plugin>
@@ -23,7 +31,7 @@
                 <archive>
                     <manifest>
                         <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        <mainClass>rawven.PaperCheck</mainClass>
+                        <mainClass>www.rawven.learn.PaperCheck</mainClass>
                     </manifest>
                 </archive>
             </configuration>

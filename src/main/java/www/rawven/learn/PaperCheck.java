@@ -1,9 +1,6 @@
-package rawven;
+package www.rawven.learn;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 
 public class PaperCheck {
@@ -25,6 +22,9 @@ public class PaperCheck {
         try {
             String originalText = fileHandler.readFile(originalFilePath);
             String plagiarizedText = fileHandler.readFile(plagiarizedFilePath);
+            if(originalText.isBlank() || plagiarizedText.isBlank()){
+                return;
+            }
             double similarity = similarityCalculator.calculateSimilarity(originalText, plagiarizedText);
             // 保留前两位小数
             DecimalFormat df = new DecimalFormat("#.##");
