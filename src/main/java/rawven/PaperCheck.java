@@ -1,53 +1,38 @@
+package rawven;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
 
 public class PaperCheck {
 
     public static void main(String[] args) {
+        // 检查命令行参数的数量
         if (args.length != 3) {
-            System.out.println("Usage: java PaperCheck <original_file_path> <plagiarized_file_path> <output_file_path>");
-            return;
+            System.out.println("用法: java PaperCheck <原始文件路径> <抄袭文件路径> <输出文件路径>");
+            return; // 退出程序
         }
 
+        // 获取文件路径
         String originalFilePath = args[0];
         String plagiarizedFilePath = args[1];
         String outputFilePath = args[2];
+        FileHandler fileHandler = new FileHandler();
+        SimilarityCalculator similarityCalculator = new SimilarityCalculator();
 
         try {
-            String originalText = new String(Files.readAllBytes(Paths.get(originalFilePath)));
-            String plagiarizedText = new String(Files.readAllBytes(Paths.get(plagiarizedFilePath)));
-            
-            double similarity = calculateSimilarity(originalText, plagiarizedText);
-            
-            String result = String.format("%.2f", similarity);
-            Files.write(Paths.get(outputFilePath), result.getBytes());
-            
-            System.out.println("Similarity rate: " + result);
-            
+            String originalText = fileHandler.readFile(originalFilePath);
+            String plagiarizedText = fileHandler.readFile(plagiarizedFilePath);
+            double similarity = similarityCalculator.calculateSimilarity(originalText, plagiarizedText);
+            // 保留前两位小数
+            DecimalFormat df = new DecimalFormat("#.##");
+            String result = "相似度: " + df.format(similarity);
+            fileHandler.writeFile(outputFilePath, result);
+            System.out.println(result);
         } catch (IOException e) {
-            System.err.println("Error reading or writing files: " + e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    private static double calculateSimilarity(String original, String plagiarized) {
-        int lcsLength = longestCommonSubsequence(original, plagiarized);
-        return (double) lcsLength * 2 / (original.length() + plagiarized.length());
-    }
-
-    private static int longestCommonSubsequence(String a, String b) {
-        int[][] dp = new int[a.length() + 1][b.length() + 1];
-
-        for (int i = 1; i <= a.length(); i++) {
-            for (int j = 1; j <= b.length(); j++) {
-                if (a.charAt(i - 1) == b.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
-                } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-                }
-            }
-        }
-
-        return dp[a.length()][b.length()];
     }
 }
